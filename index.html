@@ -3,321 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dawid - Portfolio</title>
+    <title>Dawid OS - Terminal Portfolio</title>
     <style>
-        /* Stylistyka w klimacie WendoJ - Ciemny motyw i akcenty */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Courier New', Courier, monospace;
         }
 
         body {
-            background-color: #0b0c10;
-            color: #c5c6c7;
-            line-height: 1.6;
-            padding-bottom: 80px;
+            background-color: #050505;
+            color: #00ff66;
+            padding: 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        header {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 30px 20px;
+        /* Efekt starego monitora CRT */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 99999;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        #boot-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #050505;
+            z-index: 10000;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
+            cursor: pointer;
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #fff;
-            letter-spacing: 1px;
+        .blink {
+            animation: blinker 1s linear infinite;
         }
 
-        nav a {
-            color: #66fcf1;
-            text-decoration: none;
-            margin-left: 20px;
-            font-weight: 500;
-            transition: 0.3s;
+        @keyframes blinker {
+            50% { opacity: 0; }
         }
 
-        nav a:hover {
-            color: #45f3ff;
-        }
-
-        .container {
-            max-width: 1100px;
+        #terminal {
+            display: none;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 40px 20px;
         }
 
-        /* Sekcja Hero / O mnie */
-        .hero {
-            padding: 60px 0;
+        .output-line {
+            margin-bottom: 8px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
-        .tags {
+        .ascii-art {
+            color: #45f3ff;
+            font-weight: bold;
+            line-height: 1.2;
+            margin: 20px 0;
+        }
+
+        .input-line {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .prompt {
+            color: #45f3ff;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            background: transparent;
+            border: none;
+            color: #00ff66;
+            font-family: inherit;
+            font-size: 16px;
+            outline: none;
+            flex: 1;
         }
 
         .tag {
-            background-color: #1f2833;
-            color: #66fcf1;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
+            color: #050505;
+            background: #00ff66;
+            padding: 2px 6px;
             font-weight: bold;
-            text-transform: lowercase;
+            margin-right: 5px;
+            font-size: 12px;
         }
-
-        h1 {
-            font-size: 48px;
-            color: #fff;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .hero p {
-            font-size: 18px;
-            max-width: 600px;
-            color: #a9a9a9;
-            margin-bottom: 30px;
-        }
-
-        .btn {
-            display: inline-block;
-            background-color: #66fcf1;
-            color: #0b0c10;
-            padding: 12px 24px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #45f3ff;
-            box-shadow: 0 0 15px rgba(102, 252, 241, 0.4);
-        }
-
-        /* Sekcja Projekty */
-        .section-title {
-            font-size: 28px;
-            color: #fff;
-            margin: 60px 0 30px 0;
-            border-left: 4px solid #66fcf1;
-            padding-left: 15px;
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-
-        .project-card {
-            background-color: #1f2833;
-            border-radius: 8px;
-            padding: 25px;
-            border: 1px solid #2c3540;
-            transition: 0.3s;
-        }
-
-        .project-card:hover {
-            transform: translateY(-5px);
-            border-color: #66fcf1;
-        }
-
-        .project-card h3 {
-            color: #fff;
-            margin-bottom: 12px;
-            font-size: 20px;
-        }
-
-        .project-card p {
-            font-size: 15px;
-            color: #c5c6c7;
-            margin-bottom: 15px;
-        }
-
-        /* Sekcja Minigierka (Klikacz) */
-        .game-box {
-            background-color: #1f2833;
-            border-radius: 8px;
-            padding: 40px;
-            text-align: center;
-            border: 2px dashed #66fcf1;
-            margin-top: 20px;
-        }
-
-        .game-btn {
-            background-color: #ff4a5a;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: 0.2s;
-        }
-
-        .game-btn:active {
-            transform: scale(0.95);
-        }
-
-        .score-display {
-            font-size: 22px;
-            margin-top: 15px;
-            color: #fff;
-        }
-
-        /* Sekcja Kontakt */
-        .contact-info {
-            background-color: #11141a;
-            padding: 30px;
-            border-radius: 8px;
-            border: 1px solid #1f2833;
-        }
-
-        .contact-info p {
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-
-        .contact-info strong {
-            color: #66fcf1;
+        
+        .project-box {
+            border: 1px dashed #00ff66;
+            padding: 15px;
+            margin: 10px 0;
+            background: #0a0f0a;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">D.</div>
-        <nav>
-            <a href="#projekty">Projekty</a>
-            <a href="#gra">Wyzwanie</a>
-            <a href="#kontakt">Kontakt</a>
-        </nav>
-    </header>
-
-    <div class="container">
-        
-        <!-- O MNIE (HERO) -->
-        <section class="hero">
-            <div class="tags">
-                <span class="tag">electronics</span>
-                <span class="tag">microcontrollers</span>
-                <span class="tag">home-automation</span>
-                <span class="tag">networks</span>
-            </div>
-            <h1>Cześć, jestem Dawid.</h1>
-            <p>Uczeń i pasjonat nowych technologii. Konstruuję własne układy elektroniczne, konfiguruję systemy automatyki domowej i zarządzam lokalnymi sieciami. Lubię zamieniać skomplikowane schematy w działające projekty.</p>
-            <a href="#kontakt" class="btn">Napisz do mnie</a>
-        </section>
-
-        <!-- PROJEKTY -->
-        <h2 id="projekty" class="section-title">Moje Projekty</h2>
-        <div class="projects-grid">
-            
-            <!-- PROJEKT 1 -->
-            <div class="project-card">
-                <h3>Panel Kontrolny LED Statusu</h3>
-                <p>Fizyczny panel sterowania oparty na mikrokontrolerze Raspberry Pi Pico 2 W. Całość działa w oparciu o ESPHome i integruje się bezprzewodowo z systemem automatyki.</p>
-                <div class="tags">
-                    <span class="tag">pico-2w</span>
-                    <span class="tag">esphome</span>
-                </div>
-            </div>
-
-            <!-- PROJEKT 2 -->
-            <div class="project-card">
-                <h3>Centrum Home Assistant</h3>
-                <p>Wdrożenie i pełna konfiguracja domowego systemu zarządzania automatyką. Integracja oświetlenia, czujników oraz stworzenie responsywnego dashboardu dla użytkowników.</p>
-                <div class="tags">
-                    <span class="tag">smart-home</span>
-                    <span class="tag">dashboard</span>
-                </div>
-            </div>
-
-            <!-- MIEJSCE NA NOWE PROJEKTY (Instrukcja poniżej) -->
-
-        </div>
-
-        <!-- MINIGIERKA DLA REKRUTERA -->
-        <h2 id="gra" class="section-title">Strefa Rekrutera (Złap mnie jeśli potrafisz!)</h2>
-        <div class="game-box">
-            <p>Drogi Pracodawco! Sprawdź swój refleks przed przejrzeniem kodu. Masz 5 sekund, żeby zdobyć jak najwięcej kliknięć!</p>
-            <button class="game-btn" id="clicker-btn" onclick="startGame()">Uruchom test refleksu</button>
-            <div class="score-display" id="score-text">Punkty: 0</div>
-            <div id="timer-text" style="margin-top: 5px; color: #a9a9a9;">Pozostały czas: --</div>
-        </div>
-
-        <!-- KONTAKT -->
-        <h2 id="kontakt" class="section-title">Kontakt</h2>
-        <div class="contact-info">
-            <p>Jeżeli szukasz młodego pasjonata do swojego zespołu lub na praktyki w okolicach Raciborza – odezwij się!</p>
-            <p><strong>E-mail:</strong> twoj.mail@example.com</p>
-            <p><strong>GitHub:</strong> github.com/twój-nick</p>
-        </div>
-
+    <!-- EKRAN STARTOWY (BOOT) -->
+    <div id="boot-screen" onclick="bootSystem()">
+        <p style="font-size: 20px; color: #45f3ff;">[ NACIŚNIJ EKRAN, ABY URUCHOMIĆ SYSTEM ]</p>
+        <p class="blink" style="margin-top: 10px; color: #888;">(Włącz dźwięk dla pełnego efektu retro)</p>
     </div>
 
-    <!-- LOGIKA MINIGIERKI -->
+    <!-- WŁAŚCIWY TERMINAL -->
+    <div id="terminal">
+        <div id="history"></div>
+        
+        <div class="input-line">
+            <span class="prompt">guest@dawid-os:~$</span>
+            <input type="text" id="cmd-input" autofocus autocomplete="off" spellcheck="false">
+        </div>
+    </div>
+
     <script>
-        let clicks = 0;
-        let timeLeft = 5;
-        let gameActive = false;
-        let timerInterval;
+        const history = document.getElementById('history');
+        const terminal = document.getElementById('terminal');
+        const bootScreen = document.getElementById('boot-screen');
+        const cmdInput = document.getElementById('cmd-input');
 
-        const button = document.getElementById('clicker-btn');
-        const scoreText = document.getElementById('score-text');
-        const timerText = document.getElementById('timer-text');
-
-        function startGame() {
-            if (gameActive) {
-                clicks++;
-                scoreText.innerText = "Punkty: " + clicks;
-                return;
+        // Baza danych o projektach - ŁATWE DODAWANIE NOWYCH:
+        const projects = [
+            {
+                title: "Fizyczny Status-Panel LED Control",
+                desc: "Panel sterowania oparty na mikrokontrolerze Raspberry Pi Pico 2 W. Wykorzystuje oprogramowanie ESPHome, wysyłając stany do systemu nadrzędnego.",
+                tags: ["pico-2w", "esphome", "diy-hardware"]
+            },
+            {
+                title: "Wdrożenie Ekosystemu Home Assistant",
+                desc: "Zbudowanie lokalnego serwera automatyki domowej. Integracja oświetlenia, sieci LAN oraz autorskie panele sterowania (dashboards).",
+                tags: ["home-assistant", "smarthome", "server"]
+            },
+            {
+                title: "BandLab Remix Project - 'Wakacje'",
+                desc: "Cyfrowa obróbka dźwięku: izolacja ścieżek wokalnych i instrumentalnych (stems), zaawansowana aranżacja oraz produkcja linii basowej 808.",
+                tags: ["audio-production", "stems", "remix"]
             }
+        ];
 
-            // Inicjalizacja gry przy pierwszym kliknięciu
-            gameActive = true;
-            clicks = 1;
-            timeLeft = 5;
-            button.innerText = "KLIKAJ!";
-            button.style.backgroundColor = "#66fcf1";
-            button.style.color = "#0b0c10";
-            scoreText.innerText = "Punkty: " + clicks;
-            timerText.innerText = "Pozostały czas: " + timeLeft + "s";
+        // Dźwięk retro komputera generowany przez kod (Web Audio API)
+        function playRetroBeep() {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Dźwięk 1: Kliknięcie przekaźnika
+            let osc1 = ctx.createOscillator();
+            let gain1 = ctx.createGain();
+            osc1.type = 'sawtooth';
+            osc1.frequency.setValueAtTime(80, ctx.currentTime);
+            gain1.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain1.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+            osc1.connect(gain1);
+            gain1.connect(ctx.destination);
+            osc1.start();
+            osc1.stop(ctx.currentTime + 0.05);
 
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                timerText.innerText = "Pozostały czas: " + timeLeft + "s";
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    gameActive = false;
-                    button.innerText = "Zagraj jeszcze raz";
-                    button.style.backgroundColor = "#ff4a5a";
-                    button.style.color = "white";
-                    
-                    let ocena = "Całkiem nieźle!";
-                    if (clicks > 25) ocena = "Genialny refleks! Musisz mnie zatrudnić!";
-                    if (clicks < 12) ocena = "Potrzebujesz więcej kawy? Spróbuj znowu!";
-                    
-                    alert("Koniec czasu! Zdobyłeś " + clicks + " punktów. " + ocena);
-                }
-            }, 1000);
+            // Dźwięk 2: Stary wysoki pisk BIOSu
+            setTimeout(() => {
+                let osc2 = ctx.createOscillator();
+                let gain2 = ctx.createGain();
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(900, ctx.currentTime);
+                gain2.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+                osc2.connect(gain2);
+                gain2.connect(ctx.destination);
+                osc2.start();
+                osc2.stop(ctx.currentTime + 0.4);
+            }, 100);
         }
-    </script>
 
+        function bootSystem() {
+            bootScreen.style.display = 'none';
+            terminal.style.display = 'block';
+            playRetroBeep();
+
+            const bootLines = [
+                "DAWID ARCH-BIOS v4.86 (C) 2026",
+                "CPU: ARM Cortex-M33 @ 150MHz (Raspberry Pi Silicon)",
+                "RAM: 520KB SRAM OK...",
+                "DETECTING ATTACHED DEVICES...",
+                "  > USB DEV 0: Nothing Phone 4a Pro [CONNECTED]",
+                "  > USB DEV 1: Redmi Note 11 [DEBUG MODE ACTIVE]",
+                "NETWORKING: Local Area Subnet initialized successfully.",
+                "MOUNTING REPOSITORIES... DONE.",
+                "LOADING CORE INTERFACE..."
+            ];
+
+            let delay = 0;
+            bootLines.forEach(line => {
+                setTimeout(() => {
+                    printLine(line);
+                }, delay);
+                delay += 250;
+            });
+
+            setTimeout(() => {
+                printAscii();
+                printLine("Witamy w systemie Dawid OS.");
+                printLine("Wpisz 'help', aby zobaczyć dostępne komendy powłoki systemowej.");
+                cmdInput.focus();
+            }, delay + 200);
+        }
+
+        function printLine(text, cssClass = 'output-line') {
+            const div = document.createElement('div');
+            div.className = cssClass;
+            div.innerHTML = text;
+            history.appendChild(div);
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        function printAscii() {
+            const art = `
+ ____    _ __        ___ ____         ___  ____  
+|  _ \\  / \\\\ \\      / / |_  \\       / _ \\/ ___| 
+| | | |/ _ \\\\ \\ /\\ / /   | | |_____| | | \\___ \\ 
+| |_| / ___ \\\\ V  V /    | | |_____| |_| |___) |
+|____/_/   \\_\\\\_/\\_/    |___/       \\___/|____/ 
+            `;
+            printLine(art, 'ascii-art');
+        }
+
+        // Gra w klikanie (w wersji tekstowej wewnątrz terminala)
+        let gameActive = false;
+        let score = 0;
+        function runTerminalGame() {
+            if(gameActive) return;
+            gameActive = true;
+            score = 0;
+            printLine(">>> Uruchomiono PROTOTYP SYSTEMU REFLEKSU. Masz 5 sekund!");
+            printLine(">>> KAŻDE wciśnięcie klawisza ENTER to 1 punkt. REKRUTERZE, DAWAJ!");
+            
+            setTimeout(() => {
+                gameActive = false;
+                printLine(`\n[KONIEC TESTU] Twój wynik: ${score} CPS.`);
+                if(score > 25) {
+                    printLine("STATUS: KANDYDAT IDEALNY. WYŚLIJ UMOWĘ PRACY.");
+                } else {
+                    printLine("STATUS: Wynik stabilny. Wpisz 'game' aby spróbować ponownie.");
+                }
+            }, 5000);
+        }
+
+        // Obsługa wpisywanych komend
+        cmdInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const input = this.value.trim();
+                const cmd = input.toLowerCase();
+                this.value = '';
+
+                if(gameActive) {
+                    score++;
+                    printLine(`[KLIK!] Aktualny wynik: ${score}`, 'output-line');
+                    return;
+                }
+
+                printLine(`<span style="color: #45f3ff;">guest@dawid-os:~$</span> ${input}`);
+
+                if (cmd === 'clear') {
+                    history.innerHTML = '';
+                } else if (cmd === 'help') {
+                    printLine("Dostępne komendy:");
+                    printLine("  about    - Informacje o mnie (kim jestem)");
+                    printLine("  projects - Wykaz zrealizowanych projektów i makiet");
+                    printLine("  game     - Test refleksu dla rekrutera");
+                    printLine("  contact  - Dane kontaktowe i link do GitHuba");
+                    printLine("  clear    - Czyszczenie ekranu terminala");
+                } else if (cmd === 'about') {
+                    printLine("\n--- PROFIL UŻYTKOWNIKA ---");
+                    printLine("Uczeń i konstruktor. Zajmuję się sprzętem DIY, automatyzacją procesów oraz mikrokontrolerami.");
+                    printLine("Moje środowisko naturalne to warsztat z lutownicą i edytor kodu konfiguracji sieciowej.");
+                } else if (cmd === 'projects') {
+                    printLine("\n--- REJESTR PROJEKTÓW ---");
+                    projects.forEach(p => {
+                        let tagsHtml = p.tags.map(t => `<span class="tag">${t}</span>`).join(' ');
+                        printLine(`
+                            <div class="project-box">
+                                <h3 style="color:#fff;">${p.title}</h3>
+                                <p style="color:#aaa; margin: 5px 0;">${p.desc}</p>
+                                <div>${tagsHtml}</div>
+                            </div>
+                        `);
+                    });
+                } else if (cmd === 'game') {
+                    runTerminalGame();
+                } else if (cmd === 'contact') {
+                    printLine("\n--- KANAŁY ŁĄCZNOŚCI ---");
+                    printLine("E-mail: kontakt@twojadomena.pl");
+                    printLine("GitHub: github.com/twoj-nick");
+                    printLine("Lokalizacja operacyjna: Racibórz i okolice");
+                } else if (cmd !== "") {
+                    printLine(`Błąd: Nie rozpoznano komendy '${input}'. Wpisz 'help'.`, 'output-line');
+                }
+            }
+        });
+
+        // Utrzymuj focus na inputcie przy kliknięciu w dowolne miejsce
+        document.addEventListener('click', () => {
+            if (!gameActive && bootScreen.style.display === 'none') {
+                cmdInput.focus();
+            }
+        });
+    </script>
 </body>
 </html>
