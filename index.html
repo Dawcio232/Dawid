@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dawid OS - Terminal Portfolio</title>
+    <title>Core System - Terminal Portfolio</title>
     <style>
         * {
             margin: 0;
@@ -13,40 +13,59 @@
         }
 
         body {
-            background-color: #050505;
+            background-color: #030704;
             color: #00ff66;
-            padding: 20px;
+            text-shadow: 0 0 4px rgba(0, 255, 102, 0.5);
+            padding: 30px 20px;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* Efekt starego monitora CRT */
+        /* Zaawansowany efekt monitora CRT z ruchomą linią pasów */
         body::after {
             content: " ";
             display: block;
             position: fixed;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
             z-index: 99999;
-            background-size: 100% 4px, 6px 100%;
+            background-size: 100% 5px, 6px 100%;
             pointer-events: none;
         }
 
+        /* Ruchoma linia skanująca kineskopu */
+        @keyframes scanline {
+            0% { top: -100%; }
+            100% { top: 100%; }
+        }
+        .crt-scan {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100px;
+            background: linear-gradient(to bottom, rgba(0,255,102,0), rgba(0,255,102,0.04) 50%, rgba(0,255,102,0));
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
+            z-index: 99998;
+        }
+
+        /* Ekran powitalny */
         #boot-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #050505;
+            background: #030704;
             z-index: 10000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             cursor: pointer;
+            border: 4px solid #00ff66;
+            margin: 0;
         }
 
         .blink {
-            animation: blinker 1s linear infinite;
+            animation: blinker 1.2s linear infinite;
         }
 
         @keyframes blinker {
@@ -55,27 +74,42 @@
 
         #terminal {
             display: none;
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
+            background: rgba(5, 15, 5, 0.3);
+            padding: 20px;
+            border: 1px solid rgba(0, 255, 102, 0.2);
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.05);
         }
 
         .output-line {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             white-space: pre-wrap;
             word-wrap: break-word;
+            animation: fadeIn 0.1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(2px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .ascii-art {
             color: #45f3ff;
+            text-shadow: 0 0 6px rgba(69, 243, 255, 0.6);
             font-weight: bold;
             line-height: 1.2;
-            margin: 20px 0;
+            margin: 25px 0;
+            font-size: 14px;
         }
 
         .input-line {
             display: flex;
             align-items: center;
-            margin-top: 15px;
+            margin-top: 20px;
+            border-top: 1px dashed rgba(0, 255, 102, 0.2);
+            padding-top: 15px;
         }
 
         .prompt {
@@ -88,6 +122,7 @@
             background: transparent;
             border: none;
             color: #00ff66;
+            text-shadow: 0 0 4px rgba(0, 255, 102, 0.5);
             font-family: inherit;
             font-size: 16px;
             outline: none;
@@ -95,36 +130,56 @@
         }
 
         .tag {
-            color: #050505;
+            color: #030704;
             background: #00ff66;
-            padding: 2px 6px;
+            padding: 2px 8px;
             font-weight: bold;
-            margin-right: 5px;
-            font-size: 12px;
+            margin-right: 6px;
+            font-size: 11px;
+            text-transform: uppercase;
+            border-radius: 2px;
         }
         
         .project-box {
-            border: 1px dashed #00ff66;
-            padding: 15px;
-            margin: 10px 0;
-            background: #0a0f0a;
+            border: 1px solid rgba(0, 255, 102, 0.4);
+            padding: 20px;
+            margin: 15px 0;
+            background: rgba(0, 20, 5, 0.4);
+            border-left: 4px solid #00ff66;
+        }
+
+        /* Customowy, minimalistyczny scrollbar retro */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030704;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 102, 0.3);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff66;
         }
     </style>
 </head>
 <body>
 
-    <!-- EKRAN STARTOWY (BOOT) -->
+    <div class="crt-scan"></div>
+
+    <!-- BOOT SCREEN -->
     <div id="boot-screen" onclick="bootSystem()">
-        <p style="font-size: 20px; color: #45f3ff;">[ NACIŚNIJ EKRAN, ABY URUCHOMIĆ SYSTEM ]</p>
-        <p class="blink" style="margin-top: 10px; color: #888;">(Włącz dźwięk dla pełnego efektu retro)</p>
+        <p style="font-size: 22px; color: #00ff66; letter-spacing: 2px;">⚡ CORE SYSTEM INITIALIZATION ⚡</p>
+        <p class="blink" style="margin-top: 15px; color: #45f3ff;">[ KLIKNIJ KONSOLĘ, ABY ZAMONTOWAĆ ŚRODOWISKO ]</p>
     </div>
 
-    <!-- WŁAŚCIWY TERMINAL -->
+    <!-- TERMINAL -->
     <div id="terminal">
         <div id="history"></div>
         
         <div class="input-line">
-            <span class="prompt">guest@dawid-os:~$</span>
+            <span class="prompt">operator@stack-node:~$</span>
             <input type="text" id="cmd-input" autofocus autocomplete="off" spellcheck="false">
         </div>
     </div>
@@ -135,54 +190,58 @@
         const bootScreen = document.getElementById('boot-screen');
         const cmdInput = document.getElementById('cmd-input');
 
-        // Baza danych o projektach - ŁATWE DODAWANIE NOWYCH:
+        // Baza danych projektów (Czyste opisy techniczne)
         const projects = [
             {
-                title: "Fizyczny Status-Panel LED Control",
-                desc: "Panel sterowania oparty na mikrokontrolerze Raspberry Pi Pico 2 W. Wykorzystuje oprogramowanie ESPHome, wysyłając stany do systemu nadrzędnego.",
-                tags: ["pico-2w", "esphome", "diy-hardware"]
+                title: "Hardware Status Panel (LED Matrix Control)",
+                desc: "Fizyczny moduł statusowy oparty na mikrokontrolerze dedykowanym architekturze ARM. Oprogramowanie bazuje na asynchronicznym frameworku sieciowym IoT, komunikując się bezprzewodowo z nadrzędnym ekosystemem zarządzania.",
+                tags: ["hardware", "iot-firmware", "automation"]
             },
             {
-                title: "Wdrożenie Ekosystemu Home Assistant",
-                desc: "Zbudowanie lokalnego serwera automatyki domowej. Integracja oświetlenia, sieci LAN oraz autorskie panele sterowania (dashboards).",
-                tags: ["home-assistant", "smarthome", "server"]
+                title: "Lokalne Wdrożenie Ekosystemu Automatyki Domowej",
+                desc: "Implementacja oraz kompleksowa konfiguracja scentralizowanego serwera nadzorującego automatykę. Integracja protokołów sieciowych, zarządzanie stanami sensorów oraz zaprojektowanie responsywnych paneli operatorskich.",
+                tags: ["server-side", "smart-home", "network-nodes"]
             },
             {
-                title: "BandLab Remix Project - 'Wakacje'",
-                desc: "Cyfrowa obróbka dźwięku: izolacja ścieżek wokalnych i instrumentalnych (stems), zaawansowana aranżacja oraz produkcja linii basowej 808.",
-                tags: ["audio-production", "stems", "remix"]
+                title: "Digital Audio Stem Extraction & Rework",
+                desc: "Cyfrowa separacja składowych pasma akustycznego (izolacja ścieżek wokalnych i instrumentalnych). Miks, edycja dynamiczna oraz zaawansowana sekwencja aranżacji ścieżki basowej w cyfrowym środowisku DAW.",
+                tags: ["audio-dsp", "remixing", "sound-design"]
             }
         ];
 
-        // Dźwięk retro komputera generowany przez kod (Web Audio API)
+        // Syntetyzator dźwięku retro (Web Audio API)
         function playRetroBeep() {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            
-            // Dźwięk 1: Kliknięcie przekaźnika
-            let osc1 = ctx.createOscillator();
-            let gain1 = ctx.createGain();
-            osc1.type = 'sawtooth';
-            osc1.frequency.setValueAtTime(80, ctx.currentTime);
-            gain1.gain.setValueAtTime(0.1, ctx.currentTime);
-            gain1.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
-            osc1.connect(gain1);
-            gain1.connect(ctx.destination);
-            osc1.start();
-            osc1.stop(ctx.currentTime + 0.05);
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Beep 1 - Przekaźnik hardware
+                let osc1 = ctx.createOscillator();
+                let gain1 = ctx.createGain();
+                osc1.type = 'triangle';
+                osc1.frequency.setValueAtTime(120, ctx.currentTime);
+                gain1.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain1.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+                osc1.connect(gain1);
+                gain1.connect(ctx.destination);
+                osc1.start();
+                osc1.stop(ctx.currentTime + 0.08);
 
-            // Dźwięk 2: Stary wysoki pisk BIOSu
-            setTimeout(() => {
-                let osc2 = ctx.createOscillator();
-                let gain2 = ctx.createGain();
-                osc2.type = 'sine';
-                osc2.frequency.setValueAtTime(900, ctx.currentTime);
-                gain2.gain.setValueAtTime(0.15, ctx.currentTime);
-                gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-                osc2.connect(gain2);
-                gain2.connect(ctx.destination);
-                osc2.start();
-                osc2.stop(ctx.currentTime + 0.4);
-            }, 100);
+                // Beep 2 - Sygnał BIOS
+                setTimeout(() => {
+                    let osc2 = ctx.createOscillator();
+                    let gain2 = ctx.createGain();
+                    osc2.type = 'sine';
+                    osc2.frequency.setValueAtTime(880, ctx.currentTime);
+                    gain2.gain.setValueAtTime(0.1, ctx.currentTime);
+                    gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+                    osc2.connect(gain2);
+                    gain2.connect(ctx.destination);
+                    osc2.start();
+                    osc2.stop(ctx.currentTime + 0.35);
+                }, 120);
+            } catch(e) {
+                console.log("Audio not supported or blocked by policy");
+            }
         }
 
         function bootSystem() {
@@ -191,31 +250,28 @@
             playRetroBeep();
 
             const bootLines = [
-                "DAWID ARCH-BIOS v4.86 (C) 2026",
-                "CPU: ARM Cortex-M33 @ 150MHz (Raspberry Pi Silicon)",
-                "RAM: 520KB SRAM OK...",
-                "DETECTING ATTACHED DEVICES...",
-                "  > USB DEV 0: Nothing Phone 4a Pro [CONNECTED]",
-                "  > USB DEV 1: Redmi Note 11 [DEBUG MODE ACTIVE]",
-                "NETWORKING: Local Area Subnet initialized successfully.",
-                "MOUNTING REPOSITORIES... DONE.",
-                "LOADING CORE INTERFACE..."
+                "CORE-BIOS v9.86 INITIALIZATION...",
+                "CHECKING VOLATILE MEMORY... REGISTERED OK",
+                "LOADING NETWORKING STACK: IPv4 Subnet Node Active",
+                "PERIPHERALS: USB Debugging Bridge Enabled",
+                "MOUNTING REPOSITORIES... SUCCESS",
+                "LAUNCHING KERNEL INTERFACE SHADOW..."
             ];
 
             let delay = 0;
             bootLines.forEach(line => {
                 setTimeout(() => {
-                    printLine(line);
+                    printLine(`[ OK ] ${line}`);
                 }, delay);
-                delay += 250;
+                delay += 200;
             });
 
             setTimeout(() => {
                 printAscii();
-                printLine("Witamy w systemie Dawid OS.");
-                printLine("Wpisz 'help', aby zobaczyć dostępne komendy powłoki systemowej.");
+                printLine("Połączenie zabezpieczone. Witamy w powłoce TERMINAL-OS.");
+                printLine("Wpisz <span style='color:#fff;'>help</span> aby wywołać spis dostępnych instrukcji systemowych.\n");
                 cmdInput.focus();
-            }, delay + 200);
+            }, delay + 150);
         }
 
         function printLine(text, cssClass = 'output-line') {
@@ -227,38 +283,41 @@
         }
 
         function printAscii() {
-            const art = `
- ____    _ __        ___ ____         ___  ____  
-|  _ \\  / \\\\ \\      / / |_  \\       / _ \\/ ___| 
-| | | |/ _ \\\\ \\ /\\ / /   | | |_____| | | \\___ \\ 
-| |_| / ___ \\\\ V  V /    | | |_____| |_| |___) |
-|____/_/   \\_\\\\_/\\_/    |___/       \\___/|____/ 
-            `;
+            // Poprawiony ASCII Art (odpowiednio zbalansowane znaki ucieczki)
+            const art = 
+` _____ _____ ____  __  __ ___ _   _    _    _          ___  ____  
+|_   _| ____|  _ \\|  \\/  |_ _| \\ | |  / \\  | |        / _ \\/ ___| 
+  | | |  _| | |_) | |\\/| || ||  \\| | / _ \\ | |       | | | \\___ \\ 
+  | | | |___|  _ <| |  | || || |\\  |/ ___ \\| |___ ___| |_| |___) |
+  |_| |_____|_| \\_\\_|  |_|___|_| \\_/_/   \\_\\_____|____\\___/|____/ `;
             printLine(art, 'ascii-art');
         }
 
-        // Gra w klikanie (w wersji tekstowej wewnątrz terminala)
+        // Minigierka w terminalu (CPS Test)
         let gameActive = false;
         let score = 0;
         function runTerminalGame() {
             if(gameActive) return;
             gameActive = true;
             score = 0;
-            printLine(">>> Uruchomiono PROTOTYP SYSTEMU REFLEKSU. Masz 5 sekund!");
-            printLine(">>> KAŻDE wciśnięcie klawisza ENTER to 1 punkt. REKRUTERZE, DAWAJ!");
+            cmdInput.blur(); // Zdejmij focus na czas gry, by wpisy nie kolidowały
+            printLine("\n>>> URUCHOMIONO PROCEDURĘ TESTOWĄ REFLKSU OPERATORA <<<");
+            printLine(">>> CEL: Wciskaj klawisz [ENTER] tak szybko, jak to możliwe!");
+            printLine(">>> CZAS TRWANIA: 5 SEKUND. START!");
             
             setTimeout(() => {
                 gameActive = false;
-                printLine(`\n[KONIEC TESTU] Twój wynik: ${score} CPS.`);
-                if(score > 25) {
-                    printLine("STATUS: KANDYDAT IDEALNY. WYŚLIJ UMOWĘ PRACY.");
+                cmdInput.focus();
+                printLine(`\n[RAPORT KOŃCOWY] Zarejestrowano wydajność: ${score} akcji na 5 sekund.`);
+                if(score >= 25) {
+                    printLine("RETRO-STATUS: Wydajność powyżej normy. Rekomendacja: Natychmiastowe zatrudnienie.");
                 } else {
-                    printLine("STATUS: Wynik stabilny. Wpisz 'game' aby spróbować ponownie.");
+                    printLine("RETRO-STATUS: Parametry w normie. Wpisz 'game' w celu ponownej kalibracji.");
                 }
             }, 5000);
         }
 
-        // Obsługa wpisywanych komend
+        // Interpreter komend
         cmdInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 const input = this.value.trim();
@@ -267,51 +326,60 @@
 
                 if(gameActive) {
                     score++;
-                    printLine(`[KLIK!] Aktualny wynik: ${score}`, 'output-line');
+                    printLine(`[PING!] Impuls zarejestrowany. Aktualny licznik: ${score}`, 'output-line');
                     return;
                 }
 
-                printLine(`<span style="color: #45f3ff;">guest@dawid-os:~$</span> ${input}`);
+                if (input === '') return;
 
-                if (cmd === 'clear') {
-                    history.innerHTML = '';
-                } else if (cmd === 'help') {
-                    printLine("Dostępne komendy:");
-                    printLine("  about    - Informacje o mnie (kim jestem)");
-                    printLine("  projects - Wykaz zrealizowanych projektów i makiet");
-                    printLine("  game     - Test refleksu dla rekrutera");
-                    printLine("  contact  - Dane kontaktowe i link do GitHuba");
-                    printLine("  clear    - Czyszczenie ekranu terminala");
-                } else if (cmd === 'about') {
-                    printLine("\n--- PROFIL UŻYTKOWNIKA ---");
-                    printLine("Uczeń i konstruktor. Zajmuję się sprzętem DIY, automatyzacją procesów oraz mikrokontrolerami.");
-                    printLine("Moje środowisko naturalne to warsztat z lutownicą i edytor kodu konfiguracji sieciowej.");
-                } else if (cmd === 'projects') {
-                    printLine("\n--- REJESTR PROJEKTÓW ---");
-                    projects.forEach(p => {
-                        let tagsHtml = p.tags.map(t => `<span class="tag">${t}</span>`).join(' ');
-                        printLine(`
-                            <div class="project-box">
-                                <h3 style="color:#fff;">${p.title}</h3>
-                                <p style="color:#aaa; margin: 5px 0;">${p.desc}</p>
-                                <div>${tagsHtml}</div>
-                            </div>
-                        `);
-                    });
-                } else if (cmd === 'game') {
-                    runTerminalGame();
-                } else if (cmd === 'contact') {
-                    printLine("\n--- KANAŁY ŁĄCZNOŚCI ---");
-                    printLine("E-mail: kontakt@twojadomena.pl");
-                    printLine("GitHub: github.com/twoj-nick");
-                    printLine("Lokalizacja operacyjna: Racibórz i okolice");
-                } else if (cmd !== "") {
-                    printLine(`Błąd: Nie rozpoznano komendy '${input}'. Wpisz 'help'.`, 'output-line');
+                printLine(`<span class="prompt">operator@stack-node:~$</span> ${input}`);
+
+                switch(cmd) {
+                    case 'clear':
+                        history.innerHTML = '';
+                        break;
+                    case 'help':
+                        printLine("\nDostępne dyrektywy systemowe:");
+                        printLine("  about    - Specyfikacja profilu operatora");
+                        printLine("  projects - Wykaz zrealizowanych projektów i makiet technicznych");
+                        printLine("  game     - Kalibracja refleksu (interaktywny test)");
+                        printLine("  contact  - Dostępne kanały transmisji danych");
+                        printLine("  clear    - Czyszczenie bufora ekranu\n");
+                        break;
+                    case 'about':
+                        printLine("\n--- SPECYFIKACJA PROFILU ---");
+                        printLine("Zajmuję się inżynierią systemową na poziomie podstawowym: od fizycznego projektowania układów drukowanych i lutowania, przez programowanie mikrokontrolerów niskopoziomowych, aż po administrację domowymi węzłami sieciowymi i serwerami automatyki.");
+                        printLine("Kluczowe kompetencje: Praca sprzętowa (Hardware DIY), diagnostyka sieciowa, automatyzacja środowisk rozproszonych.\n");
+                        break;
+                    case 'projects':
+                        printLine("\n--- REJESTR AKTYWNYCH PROJEKTÓW ---");
+                        projects.forEach(p => {
+                            let tagsHtml = p.tags.map(t => `<span class="tag">${t}</span>`).join(' ');
+                            printLine(`
+                                <div class="project-box">
+                                    <h3 style="color:#45f3ff;">${p.title}</h3>
+                                    <p style="color:#c5c6c7; margin: 8px 0 12px 0;">${p.desc}</p>
+                                    <div>${tagsHtml}</div>
+                                </div>
+                            `);
+                        });
+                        break;
+                    case 'game':
+                        runTerminalGame();
+                        break;
+                    case 'contact':
+                        printLine("\n--- KANAŁY TRANSMISJI DANYCH ---");
+                        printLine("E-mail: kontakt@twojadomena.pl (zastąp własnym)");
+                        printLine("GitHub: github.com/twoj-nick-repozytorium (zastąp własnym)");
+                        printLine("Strefa operacyjna: Województwo Śląskie, Polska\n");
+                        break;
+                    default:
+                        printLine(`Błąd: Instrukcja '${input}' nie została rozpoznana przez jądro systemu. Wpisz 'help'.`, 'output-line');
                 }
             }
         });
 
-        // Utrzymuj focus na inputcie przy kliknięciu w dowolne miejsce
+        // Wymuszaj focus na polu tekstowym przy kliknięciu w interfejs
         document.addEventListener('click', () => {
             if (!gameActive && bootScreen.style.display === 'none') {
                 cmdInput.focus();
