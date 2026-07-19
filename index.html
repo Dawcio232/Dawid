@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dawid - Portfolio</title>
+    <style>
+        /* Stylistyka w klimacie WendoJ - Ciemny motyw i akcenty */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0b0c10;
+            color: #c5c6c7;
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+
+        header {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        nav a {
+            color: #66fcf1;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #45f3ff;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Sekcja Hero / O mnie */
+        .hero {
+            padding: 60px 0;
+        }
+
+        .tags {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background-color: #1f2833;
+            color: #66fcf1;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: lowercase;
+        }
+
+        h1 {
+            font-size: 48px;
+            color: #fff;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 18px;
+            max-width: 600px;
+            color: #a9a9a9;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #66fcf1;
+            color: #0b0c10;
+            padding: 12px 24px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #45f3ff;
+            box-shadow: 0 0 15px rgba(102, 252, 241, 0.4);
+        }
+
+        /* Sekcja Projekty */
+        .section-title {
+            font-size: 28px;
+            color: #fff;
+            margin: 60px 0 30px 0;
+            border-left: 4px solid #66fcf1;
+            padding-left: 15px;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .project-card {
+            background-color: #1f2833;
+            border-radius: 8px;
+            padding: 25px;
+            border: 1px solid #2c3540;
+            transition: 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: #66fcf1;
+        }
+
+        .project-card h3 {
+            color: #fff;
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
+
+        .project-card p {
+            font-size: 15px;
+            color: #c5c6c7;
+            margin-bottom: 15px;
+        }
+
+        /* Sekcja Minigierka (Klikacz) */
+        .game-box {
+            background-color: #1f2833;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            border: 2px dashed #66fcf1;
+            margin-top: 20px;
+        }
+
+        .game-btn {
+            background-color: #ff4a5a;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.2s;
+        }
+
+        .game-btn:active {
+            transform: scale(0.95);
+        }
+
+        .score-display {
+            font-size: 22px;
+            margin-top: 15px;
+            color: #fff;
+        }
+
+        /* Sekcja Kontakt */
+        .contact-info {
+            background-color: #11141a;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #1f2833;
+        }
+
+        .contact-info p {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .contact-info strong {
+            color: #66fcf1;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">D.</div>
+        <nav>
+            <a href="#projekty">Projekty</a>
+            <a href="#gra">Wyzwanie</a>
+            <a href="#kontakt">Kontakt</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <!-- O MNIE (HERO) -->
+        <section class="hero">
+            <div class="tags">
+                <span class="tag">electronics</span>
+                <span class="tag">microcontrollers</span>
+                <span class="tag">home-automation</span>
+                <span class="tag">networks</span>
+            </div>
+            <h1>Cześć, jestem Dawid.</h1>
+            <p>Uczeń i pasjonat nowych technologii. Konstruuję własne układy elektroniczne, konfiguruję systemy automatyki domowej i zarządzam lokalnymi sieciami. Lubię zamieniać skomplikowane schematy w działające projekty.</p>
+            <a href="#kontakt" class="btn">Napisz do mnie</a>
+        </section>
+
+        <!-- PROJEKTY -->
+        <h2 id="projekty" class="section-title">Moje Projekty</h2>
+        <div class="projects-grid">
+            
+            <!-- PROJEKT 1 -->
+            <div class="project-card">
+                <h3>Panel Kontrolny LED Statusu</h3>
+                <p>Fizyczny panel sterowania oparty na mikrokontrolerze Raspberry Pi Pico 2 W. Całość działa w oparciu o ESPHome i integruje się bezprzewodowo z systemem automatyki.</p>
+                <div class="tags">
+                    <span class="tag">pico-2w</span>
+                    <span class="tag">esphome</span>
+                </div>
+            </div>
+
+            <!-- PROJEKT 2 -->
+            <div class="project-card">
+                <h3>Centrum Home Assistant</h3>
+                <p>Wdrożenie i pełna konfiguracja domowego systemu zarządzania automatyką. Integracja oświetlenia, czujników oraz stworzenie responsywnego dashboardu dla użytkowników.</p>
+                <div class="tags">
+                    <span class="tag">smart-home</span>
+                    <span class="tag">dashboard</span>
+                </div>
+            </div>
+
+            <!-- MIEJSCE NA NOWE PROJEKTY (Instrukcja poniżej) -->
+
+        </div>
+
+        <!-- MINIGIERKA DLA REKRUTERA -->
+        <h2 id="gra" class="section-title">Strefa Rekrutera (Złap mnie jeśli potrafisz!)</h2>
+        <div class="game-box">
+            <p>Drogi Pracodawco! Sprawdź swój refleks przed przejrzeniem kodu. Masz 5 sekund, żeby zdobyć jak najwięcej kliknięć!</p>
+            <button class="game-btn" id="clicker-btn" onclick="startGame()">Uruchom test refleksu</button>
+            <div class="score-display" id="score-text">Punkty: 0</div>
+            <div id="timer-text" style="margin-top: 5px; color: #a9a9a9;">Pozostały czas: --</div>
+        </div>
+
+        <!-- KONTAKT -->
+        <h2 id="kontakt" class="section-title">Kontakt</h2>
+        <div class="contact-info">
+            <p>Jeżeli szukasz młodego pasjonata do swojego zespołu lub na praktyki w okolicach Raciborza – odezwij się!</p>
+            <p><strong>E-mail:</strong> twoj.mail@example.com</p>
+            <p><strong>GitHub:</strong> github.com/twój-nick</p>
+        </div>
+
+    </div>
+
+    <!-- LOGIKA MINIGIERKI -->
+    <script>
+        let clicks = 0;
+        let timeLeft = 5;
+        let gameActive = false;
+        let timerInterval;
+
+        const button = document.getElementById('clicker-btn');
+        const scoreText = document.getElementById('score-text');
+        const timerText = document.getElementById('timer-text');
+
+        function startGame() {
+            if (gameActive) {
+                clicks++;
+                scoreText.innerText = "Punkty: " + clicks;
+                return;
+            }
+
+            // Inicjalizacja gry przy pierwszym kliknięciu
+            gameActive = true;
+            clicks = 1;
+            timeLeft = 5;
+            button.innerText = "KLIKAJ!";
+            button.style.backgroundColor = "#66fcf1";
+            button.style.color = "#0b0c10";
+            scoreText.innerText = "Punkty: " + clicks;
+            timerText.innerText = "Pozostały czas: " + timeLeft + "s";
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerText.innerText = "Pozostały czas: " + timeLeft + "s";
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    gameActive = false;
+                    button.innerText = "Zagraj jeszcze raz";
+                    button.style.backgroundColor = "#ff4a5a";
+                    button.style.color = "white";
+                    
+                    let ocena = "Całkiem nieźle!";
+                    if (clicks > 25) ocena = "Genialny refleks! Musisz mnie zatrudnić!";
+                    if (clicks < 12) ocena = "Potrzebujesz więcej kawy? Spróbuj znowu!";
+                    
+                    alert("Koniec czasu! Zdobyłeś " + clicks + " punktów. " + ocena);
+                }
+            }, 1000);
+        }
+    </script>
+
+</body>
+</html>
